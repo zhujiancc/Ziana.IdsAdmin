@@ -37,6 +37,7 @@ namespace Ziana.IdsAdmin.Server
                 var config = host.Services.GetRequiredService<IConfiguration>();
                 var connectionString = config.GetConnectionString("DefaultConnection");
                 SeedData.EnsureSeedData(connectionString);
+                SeedUserData.EnsureSeedData(connectionString);
                 Log.Information("Done seeding database.");
                 Log.Information("Starting host...");
                 host.Run();

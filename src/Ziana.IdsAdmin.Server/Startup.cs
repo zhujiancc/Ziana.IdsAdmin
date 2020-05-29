@@ -3,11 +3,13 @@ using Blazorise.AntDesign;
 using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Ziana.IdsAdmin.Server.Data;
+using Ziana.IdsAdmin.Server.Domains;
 
 namespace Ziana.IdsAdmin.Server
 {
@@ -33,7 +35,13 @@ namespace Ziana.IdsAdmin.Server
                 .AddAntDesignProviders()
                 .AddFontAwesomeIcons();
 
-            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            var conn = Configuration.GetConnectionString("DefaultConnection");
+
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(conn));
+
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             var builder = services.AddIdentityServer(options =>
             {
@@ -42,24 +50,24 @@ namespace Ziana.IdsAdmin.Server
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
             })
-                .AddTestUsers(TestUsers.Users)
+                .AddAspNetIdentity<ApplicationUser>()
                 // this adds the config data from DB (clients, resources, CORS)
                 .AddConfigurationStore(options =>
                 {
-                    options.ConfigureDbContext = builder => builder.UseSqlite(connectionString);
+                    options.ConfigureDbContext = builder => builder.UseSqlite(conn);
                 })
                 // this adds the operational data from DB (codes, tokens, consents)
                 .AddOperationalStore(options =>
                 {
-                    options.ConfigureDbContext = builder => builder.UseSqlite(connectionString);
+                    options.ConfigureDbContext = builder => builder.UseSqlite(conn);
 
                     // this enables automatic token cleanup. this is optional.
                     options.EnableTokenCleanup = true;
                 });
 
+
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
