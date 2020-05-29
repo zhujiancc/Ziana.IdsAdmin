@@ -9,4 +9,8 @@
     <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
+
 </Project>
