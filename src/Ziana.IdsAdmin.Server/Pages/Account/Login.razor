@@ -1,3 +1,27 @@
 ﻿@page "/Account/Login"
+@page "/Account/Login/{ReturnUrl}"
+@using Ziana.IdsAdmin.Server.ViewModels.Account
+@inject AccountService AccountService
 
-<h1>Login</h1>
+
+<EditForm Model="@loginInput" OnSubmit="Submit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <TextEdit Placeholder="Username" @bind-Value="@loginInput.UserName" />
+    <TextEdit Placeholder="Password" @bind-Value="@loginInput.Password" Role="TextRole.Password" />
+    <button type="submit">Submit1</button>
+</EditForm>
+
+
+@code{
+    [Parameter]
+    public string ReturnUrl { get; set; }
+
+    private LoginInput loginInput = new LoginInput();
+
+    private async Task Submit()
+    {
+        await AccountService.Login(loginInput);
+    }
+}

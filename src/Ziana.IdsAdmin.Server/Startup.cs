@@ -10,20 +10,24 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Ziana.IdsAdmin.Server.Data;
 using Ziana.IdsAdmin.Server.Domains;
+using Ziana.IdsAdmin.Server.Services;
 
 namespace Ziana.IdsAdmin.Server
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public IHostEnvironment HostEnvironment;
+        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
             Configuration = configuration;
+            HostEnvironment = hostEnvironment;
         }
 
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
@@ -68,6 +72,9 @@ namespace Ziana.IdsAdmin.Server
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
+
+
+            services.AddScoped<AccountService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

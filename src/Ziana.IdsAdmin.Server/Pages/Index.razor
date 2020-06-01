@@ -1,5 +1,19 @@
 ﻿@page "/"
+<input @bind="CurrentValue" />
 
-<h1>Hello, 123123!1212</h1>
+<Hello Name="@CurrentValue" OnClickCallback="Say">
+    <div>I am a body</div>
+</Hello>
 
-Welcome to your new app.
+<div>word: @word</div>
+
+@code {
+    private string CurrentValue { get; set; } = "Hello World";
+
+    private string word = "nothing";
+
+    private void Say()
+    {
+        word = $"je:{Guid.NewGuid().ToString("N")}";
+    }
+}

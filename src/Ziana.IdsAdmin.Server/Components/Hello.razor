@@ -1,0 +1,21 @@
+﻿Hello World @Name
+
+<button @onclick="HelloWorld">HelloWorld</button>
+
+<div class="panel-body">@ChildContent</div>
+
+@code{
+    [Parameter]
+    public string Name { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClickCallback { get; set; }
+
+    private async Task HelloWorld()
+    {
+        await OnClickCallback.InvokeAsync(new MouseEventArgs());
+    }
+}
